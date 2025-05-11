@@ -1,0 +1,21 @@
+# data_preprocessing/normalize.py
+import numpy as np
+import pandas as pd
+
+def normalize_eeg(data_path):
+    # Load dataset (CSV format)
+    df = pd.read_csv(data_path)
+    X = df.iloc[:, 1:-1].values  # Exclude 'y' (label) and first column (index)
+    y = df.iloc[:, -1].values
+    
+    # Binary classification: Class 1 (seizure) vs. Classes 2-5 (non-seizure)
+    y = np.where(y == 1, 1, 0)
+    
+    # Min-Max normalization
+    X_normalized = (X - X.min()) / (X.max() - X.min())
+    
+    return X_normalized, y
+
+if __name__ == "__main__":
+    X, y = normalize_eeg("data/epileptic_seizure.csv")
+    print("Normalized data shape:", X.shape, "Labels shape:", y.shape)
